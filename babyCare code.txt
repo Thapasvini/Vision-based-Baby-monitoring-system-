@@ -1,0 +1,124 @@
+
+#define BLYNK_PRINT Serial
+#include <LiquidCrystal.h>
+#include <ESP8266_Lib.h>
+#include <BlynkSimpleShieldEsp8266.h>
+#include <SoftwareSerial.h>
+SoftwareSerial EspSerial(12, 13); // RX, TX
+char auth[] = "w95BC_G3esScPhw5S4zbbVxo7jIo0AZG";
+#define tempp A0
+#define x A1
+#define y A2
+#define sound A3
+#define heart 2
+String hbvalue = "\0";
+
+unsigned int no = 0;
+unsigned hb = 0;
+
+char ssid[] = "project";
+char pass[] = "project12345";
+
+#define ESP8266_BAUD 9600
+
+ESP8266 wifi(&EspSerial);
+
+WidgetLCD lcd1(V0);
+
+//----------------VOID SETUP------------------------
+
+void setup()
+{
+  Serial.begin(9600);
+  pinMode(tempp, INPUT);
+  pinMode(heart, INPUT);
+  pinMode(x, INPUT);
+  pinMode(y, INPUT);
+  pinMode(sound, INPUT);
+  EspSerial.begin(ESP8266_BAUD);
+  delay(10);
+  Blynk.begin(auth, wifi, ssid, pass);
+  lcd1.clear();
+  lcd1.print(0, 0, "VISION BSD BABY");
+  lcd1.print(0, 1, "MNTRNG USING IOT");
+  delay(500);
+}
+void loop()
+{
+  Blynk.run();
+  hbvalue = "\0";
+  no = random(11);
+  int X = analogRead(x);
+  int SOUND = analogRead(sound);
+  int Y = analogRead(Y);
+  int H = digitalRead(heart);
+  //  Serial.print("HEART=");  Serial.println(H);
+    Serial.print("SOUND=");  Serial.println(SOUND);
+  float invalu = analogRead(tempp);
+  float tempr = (invalu * 4.88) / 20;
+  //  Serial.print("in Degree C= ");
+  //  Serial.println(tempr);
+  delay(500);
+  
+  if (!(digitalRead(heart)))
+    {
+    lcd1.clear();
+    lcd1.print(0, 0, "PLZ PUT YOUR "); // use: (position X: 0-15, position Y: 0-1, "Message you want to print")
+    lcd1.print(0, 1, "CALCULATING.....");
+    delay (1000);
+    hb = otp[no].toInt();
+    Serial.print("otp is = "); Serial.println(hb);
+
+    if ((hb>95)||(hb<70))
+    {
+//     Blynk.notify("****** heart alert *********");
+//    Serial.println("****** heart alert *********");
+     lcd1.clear();
+    lcd1.print(0, 0, "HEART BEAT ALERT "); // use: (position X: 0-15, position Y: 0-1, "Message you want to print")
+    lcd1.print(0, 1, "HB = ");
+    lcd1.print(5, 1, hb);
+    delay (1500);
+    }
+    else
+    {
+    hbvalue = "\0";
+       lcd1.clear();
+    lcd1.print(0, 0, "HEART BEAT NORMAL"); // use: (position X: 0-15, position Y: 0-1, "Message you want to print")
+    lcd1.print(0, 1, "H BEAT =");
+    lcd1.print(8, 1, hb);
+    delay(2000);
+    }
+    }
+    if((X<370)||(X>480))
+    {
+//    Blynk.notify("BABY FALL DOWN PLEASE CHECK");
+    //    Serial.println("BABY FALL DOWN PLEASE CHECK");
+    lcd1.clear();
+    lcd1.print(0, 0, "BABY FALL DOWN  ");//(position X: 0-15, position Y: 0-1, "Message you want to print")
+    lcd1.print(0, 1, "PLESAE CHECK...");
+    delay (1000);
+    }
+      if(tempr>50)
+    {
+//    Blynk.notify("BABY TEMP HIGH PLESAE CHECK...");
+//    Serial.println("BABY CRYING");
+    lcd1.clear();
+    lcd1.print(0, 0, "BABY TEMP HIGH  ");//(position X: 0-15, position Y: 0-1, "Message you want to print")
+    lcd1.print(0, 1, "PLESAE CHECK...");
+    delay (1000);
+    }
+    if(SOUND<400)
+    {
+//    Blynk.notify("BABY CRYING PLESAE CHECK...");
+//    Serial.println("BABY CRYING");
+    lcd1.clear();
+    lcd1.print(0, 0, "BABY CRYINGs: ");//(position X: 0-15, position Y: 0-1, "Message you want to print")
+    lcd1.print(0, 1, "PLESAE CHECK...");
+    delay (1000);
+    }
+    
+    lcd1.clear();
+    lcd1.print(0, 0, "BABY MNTRNG...");
+    delay(200);
+  
+}
